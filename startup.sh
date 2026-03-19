@@ -176,7 +176,7 @@ WF_SECRET_KEY=${SECRET_KEY}
 WF_SECRET_FILE=/data/secrets.json
 
 # Authentication (Required for web access)
-WF_AUTH_PASSWORD_HASH=${PASSWORD_HASH}
+WF_AUTH_PASSWORD_HASH='${PASSWORD_HASH}'
 WF_AUTH_TOKEN_TTL_MINUTES=480
 
 # Network
