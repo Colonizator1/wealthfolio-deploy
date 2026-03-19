@@ -174,7 +174,7 @@ EOF
 fi
 
 # Make utility scripts executable
-chmod +x backup.sh stop.sh update.sh
+chmod +x backup.sh update.sh
 
 # Pull Docker images
 print_message "Pulling Docker images..." "$YELLOW"
@@ -202,7 +202,7 @@ if docker-compose ps | grep -q "Up"; then
     echo
     print_message "📋 Useful commands:" "$BLUE"
     print_message "   View logs:    docker-compose logs -f" "$YELLOW"
-    print_message "   Stop:         ./stop.sh" "$YELLOW"
+    print_message "   Stop:         docker-compose down" "$YELLOW"
     print_message "   Update:       ./update.sh" "$YELLOW"
     print_message "   Backup:       ./backup.sh" "$YELLOW"
     echo
