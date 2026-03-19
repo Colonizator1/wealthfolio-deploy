@@ -135,6 +135,26 @@ if [[ "$SKIP_CONFIG" != "true" ]]; then
         break
     done
 
+    # Get domain for CORS configuration
+    echo
+    read -p "Enter your domain (or 'localhost' for local setup): " DOMAIN
+    if [[ -z "$DOMAIN" ]]; then
+        DOMAIN="localhost"
+    fi
+    
+    # Set CORS origins based on domain
+    if [[ "$DOMAIN" == "localhost" ]]; then
+        CORS_ORIGINS="*"
+        print_message "Using localhost - CORS set to allow all origins" "$YELLOW"
+    else
+        # Ensure domain starts with https://
+        if [[ "$DOMAIN" != https://* ]]; then
+            DOMAIN="https://$DOMAIN"
+        fi
+        CORS_ORIGINS="$DOMAIN"
+        print_message "Using domain: $DOMAIN" "$GREEN"
+    fi
+
     # Generate secret key
     print_message "Generating secret key..." "$YELLOW"
     SECRET_KEY=$(openssl rand -base64 32)
@@ -160,7 +180,7 @@ WF_AUTH_PASSWORD_HASH=${PASSWORD_HASH}
 WF_AUTH_TOKEN_TTL_MINUTES=480
 
 # Network
-WF_CORS_ALLOW_ORIGINS=*
+WF_CORS_ALLOW_ORIGINS=${CORS_ORIGINS}
 WF_REQUEST_TIMEOUT_MS=30000
 
 # Add-ons
