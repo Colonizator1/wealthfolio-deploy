@@ -24,20 +24,8 @@ generate_password_hash() {
     local password="$1"
     local salt="wealthfolio_salt"
     
-    if command_exists argon2; then
-        # Use argon2 CLI if available
-        printf '%s' "$password" | argon2 "$salt" -id -e
-    else
-        # Fallback: use Docker method
-        print_message "WARNING: argon2 CLI not found. Using Docker fallback..." "$YELLOW"
-        echo "$password" | docker run --rm -i --entrypoint argon2 \
-            ghcr.io/afadil/wealthfolio:latest "$salt" -id -e 2>/dev/null || {
-            print_message "ERROR: Could not generate password hash. Please install argon2-utils:" "$RED"
-            print_message "  macOS: brew install argon2" "$BLUE"
-            print_message "  Ubuntu: apt-get install argon2" "$BLUE"
-            exit 1
-        }
-    fi
+    # argon2 is guaranteed to be available at this point
+    printf '%s' "$password" | argon2 "$salt" -id -e
 }
 
 print_message "🚀 Wealthfolio Self-Hosting Setup" "$BLUE"
@@ -60,6 +48,48 @@ fi
 if ! command_exists openssl; then
     print_message "ERROR: OpenSSL is not installed. Please install OpenSSL first." "$RED"
     exit 1
+fi
+
+# Check and install argon2 if not available
+if ! command_exists argon2; then
+    print_message "Argon2 not found. Installing..." "$YELLOW"
+    
+    # Detect OS and install argon2
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        # macOS
+        if command_exists brew; then
+            brew install argon2
+        else
+            print_message "ERROR: Homebrew not found. Please install Homebrew first or install argon2 manually." "$RED"
+            print_message "Visit: https://brew.sh/" "$BLUE"
+            exit 1
+        fi
+    elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+        # Linux
+        if command_exists apt-get; then
+            sudo apt-get update && sudo apt-get install -y argon2
+        elif command_exists yum; then
+            sudo yum install -y argon2
+        elif command_exists pacman; then
+            sudo pacman -S argon2
+        else
+            print_message "ERROR: No supported package manager found. Please install argon2 manually." "$RED"
+            exit 1
+        fi
+    else
+        print_message "ERROR: Unsupported OS. Please install argon2 manually." "$RED"
+        exit 1
+    fi
+    
+    # Verify installation
+    if command_exists argon2; then
+        print_message "✓ Argon2 installed successfully" "$GREEN"
+    else
+        print_message "ERROR: Failed to install argon2. Please install it manually." "$RED"
+        exit 1
+    fi
+else
+    print_message "✓ Argon2 found" "$GREEN"
 fi
 
 print_message "✓ All prerequisites met" "$GREEN"
