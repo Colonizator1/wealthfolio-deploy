@@ -58,12 +58,12 @@ Static files (already provided):
 
 ### View Logs
 ```bash
-docker-compose logs -f
+docker compose logs -f
 ```
 
 ### Stop Services
 ```bash
-docker-compose down
+docker compose down
 ```
 
 ### Backup Data
@@ -78,7 +78,7 @@ docker-compose down
 
 ### Restart Services
 ```bash
-docker-compose restart
+docker compose restart
 ```
 
 ## Configuration
@@ -136,7 +136,7 @@ server {
 ### Container won't start
 ```bash
 # Check logs
-docker-compose logs wealthfolio
+docker compose logs wealthfolio
 
 # Common issues:
 # - Port already in use: Change NGINX_PORT in docker-compose.yml
@@ -146,13 +146,10 @@ docker-compose logs wealthfolio
 ### Cannot access Wealthfolio
 ```bash
 # Check if containers are running
-docker-compose ps
-
-# Check port mapping
-docker-compose port nginx 80
+docker ps
 
 # Check nginx logs
-docker-compose logs nginx
+docker logs -fn10 nginx
 ```
 
 ### Database issues

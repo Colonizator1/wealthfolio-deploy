@@ -178,11 +178,11 @@ chmod +x backup.sh update.sh
 
 # Pull Docker images
 print_message "Pulling Docker images..." "$YELLOW"
-docker-compose pull
+docker compose pull
 
 # Start the services
 print_message "Starting Wealthfolio services..." "$YELLOW"
-docker-compose up -d
+docker compose up -d
 
 # Wait for services to be ready
 print_message "Waiting for services to start..." "$YELLOW"
@@ -192,7 +192,7 @@ sleep 10
 NGINX_PORT=$(grep "^NGINX_PORT=" .env.docker 2>/dev/null | cut -d'=' -f2 || echo "80")
 
 # Check if services are running
-if docker-compose ps | grep -q "Up"; then
+ifdocker compose ps | grep -q "Up"; then
     print_message "✓ Wealthfolio is starting up!" "$GREEN"
     echo
     print_message "📊 Access your Wealthfolio instance at:" "$BLUE"
@@ -201,8 +201,8 @@ if docker-compose ps | grep -q "Up"; then
     print_message "🔐 Login with the password you set during configuration" "$BLUE"
     echo
     print_message "📋 Useful commands:" "$BLUE"
-    print_message "   View logs:    docker-compose logs -f" "$YELLOW"
-    print_message "   Stop:         docker-compose down" "$YELLOW"
+    print_message "   View logs:    docker compose logs -f" "$YELLOW"
+    print_message "   Stop:         docker compose down" "$YELLOW"
     print_message "   Update:       ./update.sh" "$YELLOW"
     print_message "   Backup:       ./backup.sh" "$YELLOW"
     echo
@@ -211,6 +211,6 @@ if docker-compose ps | grep -q "Up"; then
     echo
     print_message "🎉 Setup complete! Enjoy using Wealthfolio!" "$GREEN"
 else
-    print_message "❌ Something went wrong. Check the logs with: docker-compose logs" "$RED"
+    print_message "❌ Something went wrong. Check the logs with: docker compose logs" "$RED"
     exit 1
 fi
